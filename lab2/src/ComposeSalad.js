@@ -4,7 +4,7 @@ import Salad from "./Salad";
 class ComposeSalad extends Component {
   constructor(props) {
     super(props);
-    this.state = { extra: {} };
+    this.state = { foundation: "", protein: "", extra: {}, dressing: "" };
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onFormSelectChange = this.onFormSelectChange.bind(this);
@@ -18,9 +18,10 @@ class ComposeSalad extends Component {
   }
 
   onFormCheckboxChange(key, item, event) {
-    console.log(key, item, event.target.value);
+    const obj = { ...this.state[key] };
+    obj[item] = event.target.checked;
     this.setState({
-      [key]: { [item]: event.target.value, ...this.state[key] }
+      [key]: obj
     });
   }
 
@@ -29,17 +30,16 @@ class ComposeSalad extends Component {
     const salad = new Salad(
       this.state.foundation,
       this.state.protein,
-      this.state.extra,
+      Object.keys(this.state.extra).filter(key => this.state.extra[key]),
       this.state.dressing
     );
     this.setState({
-      foundation: undefined,
-      protein: undefined,
+      foundation: "",
+      protein: "",
       extra: {},
-      dressing: undefined
+      dressing: ""
     });
     this.props.parentCallback(salad);
-    event.target.reset();
   }
 
   formSelect(key) {
@@ -53,9 +53,9 @@ class ComposeSalad extends Component {
           id={key}
           onChange={event => this.onFormSelectChange(key, event)}
           className="form-control"
-          value={this.state.value}
+          value={this.state[key]}
         >
-          <option selected value style={{}}>
+          <option defaultValue style={{}}>
             None
           </option>
           {arr.map(name => (
@@ -75,7 +75,7 @@ class ComposeSalad extends Component {
         <label>{key[0].toUpperCase() + key.slice(1) + "s"}</label>
         <div>
           {arr.map(item => (
-            <div className="form-check form-check-inline">
+            <div key={item} className="form-check form-check-inline">
               <input
                 className="form-check-input"
                 name={item}

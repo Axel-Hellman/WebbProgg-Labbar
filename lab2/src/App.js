@@ -14,7 +14,6 @@ class App extends Component {
   }
 
   addSalad(salad) {
-    console.log(salad);
     this.setState({ salads: this.state.salads.concat(salad) });
   }
 
