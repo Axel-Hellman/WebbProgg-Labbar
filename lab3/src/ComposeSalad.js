@@ -12,6 +12,7 @@ class ComposeSalad extends Component {
   }
 
   onFormSelectChange(key, event) {
+    event.target.parentElement.classList.add("was-validated");
     this.setState({
       [key]: event.target.value
     });
@@ -27,22 +28,27 @@ class ComposeSalad extends Component {
 
   onFormSubmit(event) {
     event.preventDefault();
-    const salad = new Salad(
-      this.state.foundation,
-      this.state.protein,
-      Object.keys(this.state.extra).filter(key => this.state.extra[key]),
-      this.state.dressing
-    );
-    this.setState({
-      foundation: "",
-      protein: "",
-      extra: {},
-      dressing: ""
-    });
-    this.props.parentCallback(salad);
+    event.target.classList.add("was-validated");
+
+    if (event.target.checkValidity()) {
+      const salad = new Salad(
+        this.state.foundation,
+        this.state.protein,
+        Object.keys(this.state.extra).filter(key => this.state.extra[key]),
+        this.state.dressing
+      );
+      this.setState({
+        foundation: "",
+        protein: "",
+        extra: {},
+        dressing: ""
+      });
+      this.props.parentCallback(salad);
+      this.props.history.push("/view-salad");
+    }
   }
 
-  formSelect(key) {
+  formSelect(key, isRequired = false) {
     const inventory = this.props.inventory;
     const arr = Object.keys(inventory).filter(name => inventory[name][key]);
 
@@ -51,17 +57,19 @@ class ComposeSalad extends Component {
         <label>{key[0].toUpperCase() + key.slice(1)}</label>
         <select
           id={key}
+          required={isRequired}
           onChange={event => this.onFormSelectChange(key, event)}
           className="form-control"
           value={this.state[key]}
         >
-          <option defaultValue style={{}}>
+          <option defaultValue value="" style={{}}>
             None
           </option>
           {arr.map(name => (
             <option key={name}>{name}</option>
           ))}
         </select>
+        <div className="invalid-feedback">required, select one</div>
       </div>
     );
   }
@@ -94,11 +102,11 @@ class ComposeSalad extends Component {
   render() {
     return (
       <div className="container">
-        <form onSubmit={this.onFormSubmit}>
-          {this.formSelect("foundation")}
+        <form onSubmit={this.onFormSubmit} noValidate>
+          {this.formSelect("foundation", true)}
           {this.formSelect("protein")}
           {this.formCheckbox("extra")}
-          {this.formSelect("dressing")}
+          {this.formSelect("dressing", true)}
           <input type="submit" className="btn btn-primary" value="Submit" />
         </form>
       </div>
