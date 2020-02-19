@@ -2,7 +2,7 @@ import React from "react";
 
 const ViewSalad = props => (
   <div className="container">
-    <h3>List of salads</h3>
+    <h3>List of orders</h3>
     <table className="table">
       <thead>
         <tr>
@@ -14,7 +14,7 @@ const ViewSalad = props => (
         </tr>
       </thead>
       <tbody>
-        {props.salads.map((salad, id) => (
+        {props.orders.map((salad, id) => (
           <tr key={id}>
             <th scope="row">{id + 1}</th>
             <td>{salad.foundation}</td>
