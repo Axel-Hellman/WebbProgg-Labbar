@@ -26,17 +26,22 @@ class ComposeSalad extends Component {
     });
   }
 
+  getIngredient = name => ({ name, ...this.props.inventory[name] });
+
   onFormSubmit(event) {
     event.preventDefault();
     event.target.classList.add("was-validated");
 
     if (event.target.checkValidity()) {
       const salad = new Salad(
-        this.state.foundation,
-        this.state.protein,
-        Object.keys(this.state.extra).filter(key => this.state.extra[key]),
-        this.state.dressing
+        this.getIngredient(this.state.foundation),
+        this.getIngredient(this.state.protein),
+        Object.keys(this.state.extra)
+          .filter(key => this.state.extra[key])
+          .map(item => this.getIngredient(item)),
+        this.getIngredient(this.state.dressing)
       );
+      console.log(salad);
       this.setState({
         foundation: "",
         protein: "",

@@ -11,16 +11,18 @@ const ViewSalad = props => (
           <th scope="col">Protein</th>
           <th scope="col">Extras</th>
           <th scope="col">Dressing</th>
+          <th scope="col">Price</th>
         </tr>
       </thead>
       <tbody>
-        {props.orders.map((salad, id) => (
-          <tr key={id}>
+        {props.orders.map((order, id) => (
+          <tr key={order.id}>
             <th scope="row">{id + 1}</th>
-            <td>{salad.foundation}</td>
-            <td>{salad.protein}</td>
-            <td>{salad.extra.join(", ")}</td>
-            <td>{salad.dressing}</td>
+            <td>{order.foundation.name}</td>
+            <td>{order.protein.name}</td>
+            <td>{order.extra.map(item => item.name).join(", ")}</td>
+            <td>{order.dressing.name}</td>
+            <td>{order.price()}</td>
           </tr>
         ))}
       </tbody>
